@@ -25,7 +25,7 @@ jobs:
     needs: [b]
     if: ${{ always() && (needs.b.result == 'success' || (needs.b.result == 'skipped' && contains(github.event.pull_request.labels.*.name, 'dependencies'))) }}
     steps:
-    # https://brunoscheufler.com/blog/2022-04-09-the-required-github-status-check-that-wasnt
+      # https://brunoscheufler.com/blog/2022-04-09-the-required-github-status-check-that-wasnt
       - name: Check status
         run: |
           passed="${{ (needs.unit-test.result == 'success' || (needs.unit-test.result == 'skipped' && contains(github.event.pull_request.labels.*.name, 'dependencies')))  }}"
