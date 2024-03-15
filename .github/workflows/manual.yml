@@ -1,4 +1,4 @@
-name: Manual Workflow Trigger
+name: Sonarqube Trigger
 
 on:
   workflow_dispatch:
@@ -6,7 +6,12 @@ on:
 jobs:
   print-tag:
     runs-on: ubuntu-latest
-    if: ${{ inputs.print_tags }}
     steps:
-      - name: Print the input tag to STDOUT
-        run: echo  The tags are ${{ inputs.tags }}
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check git status
+        shell: bash
+        run: |
+          git status

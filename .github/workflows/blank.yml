@@ -22,7 +22,19 @@ jobs:
   c:
     name: c
     runs-on: ubuntu-latest
+    if: always() # always run, so we never skip the check
     needs: [b]
-    if: ${{ always() && (needs.b.result == 'success' || (needs.b.result == 'skipped' && contains(github.event.pull_request.labels.*.name, 'dependencies'))) }}
     steps:
-      - run: echo "CC"
+      # https://brunoscheufler.com/blog/2022-04-09-the-required-github-status-check-that-wasnt
+      - name: Check status
+        run: |
+          passed="${{ (needs.b.result == 'success' || (needs.b.result == 'skipped' && contains(github.event.pull_request.labels.*.name, 'dependencies')))  }}"
+          if [[ $passed == "true" ]]; then
+            echo "Shards passed"
+            exit 0
+          else
+            echo "Shards failed"
+            exit 1
+          fi
+      - name: Print echo
+        run: echo "CC"
